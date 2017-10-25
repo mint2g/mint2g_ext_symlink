@@ -1,8 +1,8 @@
-
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
+
 #include <cutils/properties.h>
 #include <sys/system_properties.h>
 #include <android/log.h>
@@ -39,14 +39,21 @@ int setup_symlink(char *prop) {
 	  return 1;
 }
 
-int main (int argc, char *argv[])
-{
+
+
+int main (int argc, char *argv[]) {
+  int timeout=120;
+  char buf[4];
   if (strcmp (argv[1], "-p") == 0)
     {
-      while(!setup_symlink("sys.symlink.pty")) {
+      while(timeout--) {
+      	property_get ("sys.symlink.notify", buf, NULL);
+      	if (strcmp(buf, "1") == 0) {
+      	setup_symlink("sys.symlink.pty");
+      	property_set("sys.symlink.notify","0");
+       }
       	sleep(1);
       }
-      property_set("sys.symlink.notify","0");
 	}
 
     
