@@ -43,7 +43,7 @@ int setup_symlink(char *prop) {
 
 int main (int argc, char *argv[]) {
   int timeout=120;
-  char buf[4];
+  char buf[PROPERTY_VALUE_MAX];
   if (strcmp (argv[1], "-p") == 0)
     {
       while(timeout--) {
